@@ -1,4 +1,35 @@
-<html>
-<p>Telephone: 123456789</p>
-<p>Email: djangoapp@email.com</p>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        {% load static %}
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-light bg-light">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="btn btn-link" href="{% url 'djangoapp:about' %}">About us</a>
+                    <a class="btn btn-link" href="{% url 'djangoapp:contact' %}">Contact us</a>
+                </div>
+                <ul class="nav navbar-nav navbar-right">
+                    {% if user.is_authenticated %}
+                    <li>
+                        <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
+                        <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <a class="btn btn-link" href="{% url 'djangoapp:login' %}">Login</a>
+                        <a class="btn btn-link" href="{% url 'djangoapp:registration' %}">Sign Up</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+        <div class='container-fluid'>
+            <p>Telephone: 123456789</p>
+            <p>Email: djangoapp@email.com</p>
+        </div>
+    </body>
 </html>
