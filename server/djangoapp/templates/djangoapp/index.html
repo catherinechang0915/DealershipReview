@@ -38,6 +38,23 @@
     </nav>
 
     <!--Add a dealer table here -->
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">State</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for dealer in dealers%}
+                <tr>
+                    <td><a href="{% url 'djangoapp:dealer_details' dealer.id%}">{{dealer.full_name}}</a></td>
+                    <td>{{dealer.st}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+      </table>
 
     </body>
 
