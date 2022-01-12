@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
 # from .restapis import related methods
-from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf, analyze_review_sentiments
+from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -14,9 +14,8 @@ import json
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
+# base url for cloud function endpoints
 base_url = 'https://1c324d1e.us-south.apigw.appdomain.cloud/api/'
-# Create your views here.
-
 
 # Create an `about` view to render a static about page
 def about(request):
@@ -107,9 +106,24 @@ def get_dealer_details(request, dealer_id):
     if request.method == "GET":
         url = base_url + 'review/?dealerId=' + str(dealer_id)
         reviews = get_dealer_reviews_from_cf(url, dealer_id=dealer_id)
-        return render(request, 'djangoapp/dealer_details.html', {'reviews':reviews, 'dealer':dealer_id})
+        return render(request, 'djangoapp/dealer_details.html', {'reviews':reviews, 'dealer_id':dealer_id})
 
 # Create a `add_review` view to submit a review
-# def add_review(request, dealer_id):
-# ...
-
+def add_review(request, dealer_id):
+    user = request.user
+    if user.is_authenticated:
+        url = base_url + 'review'
+        review = dict()
+        review['id'] = 1234
+        review['name'] = 'test'
+        review['dealership'] = 1
+        review['review'] = 'The service for this dealership is very great!'
+        review['purchase'] = False
+        review['car_make'] = 'Audi'
+        review['car_model'] = 'Car'
+        review['car_year'] = 2020
+        json_payload = dict()
+        json_payload['review'] = review
+        result = post_request(url, json_payload, dealer_id=dealer_id)
+        logger.log(logging.ERROR, result)
+        return HttpResponse(result)
