@@ -39,13 +39,25 @@
 
     <!-- review list -->
     <div class="container-fluid">
-        <h2>Reviews for dealership {{dealer_id}}</h2>
+        <h2>Reviews for dealership {{dealer_name}}</h2>
+        {% if user.is_authenticated %}
+            <div><a class="btn btn-primary btn-block" href="{% url 'djangoapp:add_review' dealer_id %}">Add Review</a></div>
+        {% endif %}
+        <div class="card-columns"> 
         {% for review in reviews %}
             <div class="card">
+                {% if review.sentiment == 'positive' %}
+                    <img class="card-img-left" src="{{MEDIA_URL}}/emoji/positive.png" style="max-width:10%;"></img>
+                {% elif review.sentiment == 'negative' %}
+                    <img class="card-img-left" src="{{MEDIA_URL}}/emoji/negative.png" style="max-width:10%;"></img>
+                {% else %}
+                    <img class="card-img-left" src="{{MEDIA_URL}}/emoji/neutral.png" style="max-width:10%;"></img>
+                {% endif %}
+                
                 <div class="card-body">
                     <h5 class="card-title">{{review.name}}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">{{review.car_make}} {{review.car_model}} {{review.car_year}}</h6>
-                    <h6 class="card-subtitle mb-2 text-muted" style="color:green">
+                    <h6 class="card-subtitle mb-2 text-muted">
                         {% if review.purchase %}
                             Purchased
                         {% else %}
@@ -56,6 +68,7 @@
                 </div>
             </div>
         {% endfor %}
+        </div>
     </div>
 
     </body>
